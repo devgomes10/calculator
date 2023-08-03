@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
+
 
 void main() => runApp(AppCalculator());
 
@@ -38,7 +40,21 @@ class _CalculatorState extends State<Calculator> {
 
   void _calculateResult() {
     try {
-      var number = int.parse(_buildButton);
+      Parser p = Parser();
+      Expression exp = p.parse(_displayText);
+
+      ContextModel cm = ContextModel();
+      double result = exp.evaluate(EvaluationType.REAL, cm);
+
+      if (result.isFinite) {
+        setState(() {
+          _displayText = result.toString();
+        });
+      } else {
+        setState(() {
+          _displayText = 'Erro';
+        });
+      };
     } catch (e) {
       setState(() {
         _displayText = 'Erro';
